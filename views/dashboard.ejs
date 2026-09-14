@@ -1,0 +1,193 @@
+<%- include('partials/dau') %>
+<div class="app">
+	<%- include('partials/sidebar') %>
+
+	<main class="noi-dung" id="noi-dung-chinh">
+		<%- include('partials/thanh-tren') %>
+		<header class="dau-trang">
+			<div>
+				<h1>Hiểu hơn <span class="chu-grad">chi tiêu của bạn.</span></h1>
+				<p class="phu-de"><%= khoang.nhan %> · <%= khoang.soNgay %> ngày</p>
+			</div>
+			<div class="hang">
+				<a
+					class="nut nut-icon"
+					href="/dashboard?loai=<%= khoang.loai %>&moc=<%= khoang.truoc %>"
+					title="Kỳ trước"
+					aria-label="Kỳ trước"
+				>
+					<i data-lucide="chevron-left"></i>
+				</a>
+				<a class="nut nut-nho" href="/dashboard?loai=<%= khoang.loai %>">Hiện tại</a>
+				<a
+					class="nut nut-icon"
+					href="/dashboard?loai=<%= khoang.loai %>&moc=<%= khoang.sau %>"
+					title="Kỳ sau"
+					aria-label="Kỳ sau"
+				>
+					<i data-lucide="chevron-right"></i>
+				</a>
+			</div>
+		</header>
+
+		<form class="tab-bar" method="get" action="/dashboard">
+			<% Object.keys(tenLoai).forEach(function (ma) { %>
+			<button
+				type="submit"
+				name="loai"
+				value="<%= ma %>"
+				class="<%= khoang.loai === ma ? 'hoat-dong' : '' %>"
+			>
+				<%= tenLoai[ma] %>
+			</button>
+			<% }) %>
+		</form>
+
+		<section class="the the-dac mt-16">
+			<div class="the-dau">
+				<h3><i data-lucide="wallet"></i> Đã chi <%= khoang.nhanNgan %></h3>
+				<span class="nhan-trang-thai <%= tk.trangThai %>">
+					<i data-lucide="<%= tk.trangThai === 'vuot' ? 'alert-triangle' : (tk.trangThai === 'canh-bao' ? 'trending-up' : 'check-circle') %>"></i>
+					<%= tk.phanTram %>% ngân sách
+				</span>
+			</div>
+
+			<div class="so-lon"><%= tk.tong_dep %></div>
+			<div class="tien-do tien-do-lon <%= tk.trangThai %>">
+				<i style="width: <%= Math.max(1, Math.min(100, tk.phanTram)) %>%"></i>
+			</div>
+
+			<div class="luoi luoi-4 mt-16">
+				<div class="o-thong-ke">
+					<div class="nhan">Ngân sách <%= tenLoai[khoang.loai].toLowerCase() %></div>
+					<div class="so-vua"><%= tk.nganSach_dep %></div>
+					<div class="phu"><%= h.dinhDangTien(tk.hanMucNgay) %>/ngày × <%= tk.soNgay %> ngày</div>
+				</div>
+				<div class="o-thong-ke">
+					<div class="nhan"><%= tk.vuot ? 'Vượt ngân sách' : 'Còn lại' %></div>
+					<div class="so-vua <%= tk.vuot ? 'vuot' : 'ok' %>">
+						<%= tk.vuot ? h.dinhDangTien(Math.abs(tk.conLai)) : tk.conLai_dep %>
+					</div>
+					<div class="phu">
+						<%= tk.vuot ? 'Cần siết lại kỳ sau' : 'Vẫn trong tầm kiểm soát' %>
+					</div>
+				</div>
+				<div class="o-thong-ke">
+					<div class="nhan">Trung bình mỗi ngày</div>
+					<div class="so-vua"><%= tk.trungBinhNgay_dep %></div>
+					<div class="phu">tính trên số ngày đã qua trong kỳ</div>
+				</div>
+				<div class="o-thong-ke">
+					<div class="nhan">Số giao dịch</div>
+					<div class="so-vua"><%= h.dinhDangSo(tk.soGiaoDich) %></div>
+					<div class="phu">
+						<% if (tk.danhMucLonNhat) { %>
+						Cao nhất: <%= tk.danhMucLonNhat.icon %> <%= tk.danhMucLonNhat.ten %>
+						<% } else { %>Chưa có giao dịch<% } %>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<div class="report-insight mt-24"><i data-lucide="sparkles"></i><span><% if (tk.danhMucLonNhat) { %><b><%= tk.danhMucLonNhat.ten %></b> chiếm <b><%= tk.danhMucLonNhat.phan_tram %>%</b> tổng chi kỳ này. Một góc nhìn nhỏ để bạn cân đối tốt hơn.<% } else { %>Ghi lại khoản chi đầu tiên để khám phá thói quen của mình.<% } %></span></div>
+
+		<section class="the mt-24">
+			<div class="the-dau">
+				<h3>
+					<i data-lucide="bar-chart"></i>
+					<% if (khoang.loai === 'nam') { %>Chi tiêu 12 tháng<% } else if (khoang.loai === 'ngay') { %>Chi tiêu 7 ngày gần nhất<% } else { %>Chi tiêu theo ngày<% } %>
+				</h3>
+				<% if (khoang.loai === 'nam') { %>
+				<span class="chip-tinh">Bấm vào một tháng để xem chi tiết</span>
+				<% } else { %>
+				<span class="chip-tinh">Nét đứt: hạn mức</span>
+				<% } %>
+			</div>
+			<div class="boc-bieu-do"><canvas id="bd-cot" role="img" aria-label="Biểu đồ chi tiêu theo thời gian"></canvas></div>
+			<p class="nho mo mt-8 an" data-chu-thich-du-phong>
+				
+			</p>
+		</section>
+
+		<div class="luoi luoi-2 mt-24">
+			<section class="the">
+				<div class="the-dau">
+					<h3><i data-lucide="pie-chart"></i> Tỷ lệ theo danh mục</h3>
+				</div>
+				<% if (!tk.danhMuc.length) { %>
+				<div class="trong">
+					<div class="hinh">🥧</div>
+					<h3>Chưa có dữ liệu</h3>
+					<p>Ghi khoản chi đầu tiên để thấy biểu đồ này.</p>
+				</div>
+				<% } else { %>
+				<div class="boc-bieu-do tron">
+					<canvas id="bd-tron" role="img" aria-label="Biểu đồ tròn theo danh mục"></canvas>
+				</div>
+				<div class="chu-thich-tron">
+					<% tk.danhMuc.forEach(function (d) { %>
+					<span>
+						<i style="background: <%= d.mau_sac %>"></i>
+						<%= d.icon %> <%= d.ten %> · <%= d.phan_tram %>%
+					</span>
+					<% }) %>
+				</div>
+				<% } %>
+			</section>
+
+			<section class="the">
+				<div class="the-dau">
+					<h3><i data-lucide="tags"></i> Chi tiết từng danh mục</h3>
+					<a class="nut nut-nho" href="/danh-muc">Quản lý</a>
+				</div>
+				<% if (!tk.danhMuc.length) { %>
+				<p class="nho mo">Chưa có khoản chi nào trong kỳ này.</p>
+				<% } else { %>
+				<table class="bang">
+					<thead>
+						<tr>
+							<th>Danh mục</th>
+							<th class="phai">Tổng tiền</th>
+							<th class="phai">%</th>
+							<th class="phai">GD</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% tk.danhMuc.forEach(function (d) { %>
+						<tr>
+							<td>
+								<span class="o-danh-muc">
+									<span
+										class="bieu-tuong"
+										style="background: <%= d.mau_sac %>22; border-color: <%= d.mau_sac %>55"
+									>
+										<%= d.icon %>
+									</span>
+									<span>
+										<%= d.ten %>
+										<span class="thanh-mini">
+											<i style="width: <%= Math.max(2, Math.min(100, d.phan_tram)) %>%; background: <%= d.mau_sac %>"></i>
+										</span>
+									</span>
+								</span>
+							</td>
+							<td class="phai"><%= d.tong_dep %></td>
+							<td class="phai"><%= d.phan_tram %>%</td>
+							<td class="phai"><%= d.so_giao_dich %></td>
+						</tr>
+						<% }) %>
+					</tbody>
+				</table>
+				<% } %>
+			</section>
+		</div>
+	</main>
+
+	<%- include('partials/nav-duoi') %>
+</div>
+
+<script type="application/json" id="du-lieu-tk">
+	<%- JSON.stringify(tk).replace(/</g, '\\u003c') %>
+</script>
+
+<%- include('partials/cuoi', { js: ['/js/dashboard.js'], chartjs: true }) %>

@@ -1,0 +1,210 @@
+<%- include('partials/dau') %>
+<div class="app">
+	<%- include('partials/sidebar') %>
+
+	<main class="noi-dung" id="noi-dung-chinh">
+		<%- include('partials/thanh-tren') %>
+		<header class="dau-trang">
+			<div>
+				<h1>Cài đặt</h1>
+				<p class="phu-de">Hạn mức, danh mục, mật khẩu và dữ liệu của bạn</p>
+			</div>
+			<span class="chip-tinh">
+				<i data-lucide="receipt"></i> <%= h.dinhDangSo(soKhoanChi) %> khoản chi
+			</span>
+		</header>
+
+		<div class="luoi luoi-2">
+			<section class="the">
+				<div class="the-dau">
+					<h3><i data-lucide="wallet"></i> Hạn mức chi mỗi ngày</h3>
+				</div>
+				<p class="nho mo">
+					Chỉ cần nhập 1 con số — app tự tính ngân sách tuần (×7), tháng (× số ngày thực tế) và
+					năm (cộng dồn 12 tháng).
+				</p>
+				<form id="form-han-muc" class="form-doc mt-16">
+					<div class="o-nhom">
+						<label for="o-han-muc">Hạn mức / ngày</label>
+						<div class="o-tien-boc">
+							<input
+								id="o-han-muc"
+								class="o-nhap o-tien"
+								data-tien
+								inputmode="numeric"
+								value="<%= h.dinhDangSo(user.han_muc_ngay) %>"
+							/>
+							<span class="don-vi">VNĐ</span>
+						</div>
+						<p class="nho mo mt-8" id="xem-truoc-ns"></p>
+					</div>
+					<button type="submit" class="nut nut-chinh day-du">Lưu hạn mức</button>
+				</form>
+
+				<div class="dong-cai-dat mt-16">
+					<div>
+						<div class="nhan">Hạn mức hiện tại</div>
+						<div class="phu">Áp dụng cho các ngày từ hôm nay</div>
+					</div>
+					<b id="hm-hien-tai"><%= h.dinhDangTien(user.han_muc_ngay) %></b>
+				</div>
+				<div class="dong-cai-dat">
+					<div>
+						<div class="nhan">Ngân sách tuần</div>
+						<div class="phu">hạn mức × 7 ngày</div>
+					</div>
+					<b id="ns-tuan"><%= h.dinhDangTien(nganSachTuan) %></b>
+				</div>
+				<div class="dong-cai-dat">
+					<div>
+						<div class="nhan">Ngân sách <%= khoang.nhan.toLowerCase() %></div>
+						<div class="phu">hạn mức × <%= khoang.soNgay %> ngày thực tế</div>
+					</div>
+					<b id="ns-thang"><%= h.dinhDangTien(nganSachThang) %></b>
+				</div>
+
+				<% if (lichSuHanMuc.length > 1) { %>
+				<details class="mt-16">
+					<summary class="nho mo">Lịch sử thay đổi hạn mức (<%= lichSuHanMuc.length %>)</summary>
+					<table class="bang mt-8">
+						<thead>
+							<tr>
+								<th>Áp dụng từ</th>
+								<th class="phai">Hạn mức / ngày</th>
+							</tr>
+						</thead>
+						<tbody>
+							<% lichSuHanMuc.forEach(function (r) { %>
+							<tr>
+								<td><%= h.dinhDangNgay(r.ngay_hieu_luc) %></td>
+								<td class="phai"><%= h.dinhDangTien(r.han_muc_ngay) %></td>
+							</tr>
+							<% }) %>
+						</tbody>
+					</table>
+				</details>
+				<% } %>
+			</section>
+
+			<div class="hang-doc">
+				<section class="the">
+					<div class="the-dau">
+						<h3><i data-lucide="tags"></i> Danh mục</h3>
+						<a class="nut nut-nho" href="/danh-muc">Mở trang quản lý</a>
+					</div>
+					<p class="nho mo">
+						Đang có <b><%= dsDanhMuc.length %></b> danh mục. Thêm, đổi tên, đổi icon/màu hoặc xoá
+						tại trang Danh mục.
+					</p>
+					<div class="hang-tag mt-8">
+						<% dsDanhMuc.slice(0, 8).forEach(function (d) { %>
+						<span class="chip-tinh" style="--mau: <%= d.mau_sac %>">
+							<%= d.icon %> <%= d.ten %>
+						</span>
+						<% }) %>
+					</div>
+				</section>
+
+				<section class="the">
+					<div class="the-dau">
+						<h3><i data-lucide="key"></i> Đổi mật khẩu / PIN</h3>
+					</div>
+					<form id="form-mat-khau" class="form-doc">
+						<div class="o-nhom">
+							<label for="mk-cu">Mật khẩu hiện tại</label>
+							<input
+								id="mk-cu"
+								name="mat_khau_cu"
+								type="password"
+								class="o-nhap"
+								autocomplete="current-password"
+							/>
+						</div>
+						<div class="luoi luoi-2">
+							<div class="o-nhom">
+								<label for="mk-moi">Mật khẩu mới</label>
+								<input
+									id="mk-moi"
+									name="mat_khau_moi"
+									type="password"
+									class="o-nhap"
+									autocomplete="new-password"
+								/>
+							</div>
+							<div class="o-nhom">
+								<label for="mk-moi-2">Nhập lại</label>
+								<input
+									id="mk-moi-2"
+									name="mat_khau_moi_2"
+									type="password"
+									class="o-nhap"
+									autocomplete="new-password"
+								/>
+							</div>
+						</div>
+						<button type="submit" class="nut day-du">Đổi mật khẩu</button>
+					</form>
+				</section>
+			</div>
+		</div>
+
+		<div class="luoi luoi-2 mt-24">
+			<section class="the">
+				<div class="the-dau">
+					<h3><i data-lucide="download"></i> Xuất dữ liệu CSV</h3>
+				</div>
+				<p class="nho mo">Tải bản sao chi tiêu để mở bằng Excel hoặc Google Sheets.</p>
+				<form id="form-xuat" class="form-doc mt-16" method="get" action="/xuat-csv">
+					<div class="luoi luoi-2">
+						<div class="o-nhom">
+							<label for="xuat-tu">Từ ngày</label>
+							<input
+								id="xuat-tu"
+								name="tu"
+								type="date"
+								class="o-nhap"
+								value="<%= mocXuat.tu %>"
+							/>
+						</div>
+						<div class="o-nhom">
+							<label for="xuat-den">Đến ngày</label>
+							<input
+								id="xuat-den"
+								name="den"
+								type="date"
+								class="o-nhap"
+								value="<%= mocXuat.den %>"
+							/>
+						</div>
+					</div>
+					<button type="submit" class="nut day-du">
+						<i data-lucide="download"></i><span>Tải CSV</span>
+					</button>
+				</form>
+			</section>
+
+			<section class="the">
+				<div class="the-dau">
+					<h3><i data-lucide="refresh-cw"></i> Dữ liệu mẫu</h3>
+					<span class="chip-tinh"><%= soDuLieuMau %> khoản mẫu</span>
+				</div>
+				<p class="nho mo">
+					Dữ liệu mẫu giúp bạn xem giao diện có số liệu ngay. Xoá bất kỳ lúc nào — các khoản
+					chi thật của bạn không bị ảnh hưởng.
+				</p>
+				<div class="hang mt-16">
+					<button type="button" class="nut" id="nut-nap-mau">
+						<i data-lucide="refresh-cw"></i><span>Nạp lại dữ liệu mẫu</span>
+					</button>
+					<button type="button" class="nut nut-nguy" id="nut-xoa-mau">
+						<i data-lucide="trash-2"></i><span>Xoá dữ liệu mẫu</span>
+					</button>
+				</div>
+			</section>
+		</div>
+	</main>
+
+	<%- include('partials/nav-duoi') %>
+</div>
+
+<%- include('partials/cuoi', { js: ['/js/cai-dat.js'] }) %>

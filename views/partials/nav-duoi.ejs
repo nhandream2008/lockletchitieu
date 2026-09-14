@@ -1,0 +1,29 @@
+<nav class="nav-duoi" aria-label="Điều hướng dưới">
+	<ul>
+		<li>
+			<a href="/camera" class="<%= trang === 'camera' ? 'hoat-dong' : '' %>" <%- trang === 'camera' ? 'aria-current="page"' : '' %>>
+				<i data-lucide="camera"></i><span>Ghi chi</span>
+			</a>
+		</li>
+		<li>
+			<a href="/feed" class="<%= trang === 'feed' ? 'hoat-dong' : '' %>" <%- trang === 'feed' ? 'aria-current="page"' : '' %>>
+				<i data-lucide="images"></i><span>Nhật ký</span>
+			</a>
+		</li>
+		<li>
+			<a href="/dashboard" class="<%= trang === 'dashboard' ? 'hoat-dong' : '' %>" <%- trang === 'dashboard' ? 'aria-current="page"' : '' %>>
+				<i data-lucide="bar-chart"></i><span>Thống kê</span>
+			</a>
+		</li>
+		<li>
+			<a href="/danh-muc" class="<%= trang === 'danh-muc' ? 'hoat-dong' : '' %>" <%- trang === 'danh-muc' ? 'aria-current="page"' : '' %>>
+				<i data-lucide="tags"></i><span>Danh mục</span>
+			</a>
+		</li>
+		<li>
+			<a href="/cai-dat" class="<%= trang === 'cai-dat' ? 'hoat-dong' : '' %>" <%- trang === 'cai-dat' ? 'aria-current="page"' : '' %>>
+				<i data-lucide="settings"></i><span>Cài đặt</span>
+			</a>
+		</li>
+	</ul>
+</nav>

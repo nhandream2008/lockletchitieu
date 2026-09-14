@@ -1,0 +1,15 @@
+		<script src="/js/icons.js"></script>
+		<script src="/js/hieu-ung.js?v=2"></script>
+		<script src="/js/app.js?v=2"></script>
+		<script src="/js/motion.js?v=1"></script>
+		<% if (typeof chartjs !== 'undefined' && chartjs) { %>
+		<script
+			src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
+			defer
+		></script>
+		<% } %>
+		<% (typeof js !== 'undefined' && js ? js : []).forEach(function (tep) { %>
+		<script src="<%= tep %>?v=2"></script>
+		<% }) %>
+	</body>
+</html>

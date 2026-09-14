@@ -1,0 +1,162 @@
+<%- include('partials/dau') %>
+<div class="app">
+	<%- include('partials/sidebar') %>
+
+	<main class="noi-dung" id="noi-dung-chinh">
+		<%- include('partials/thanh-tren') %>
+		<header class="dau-trang">
+			<div>
+				<h1>Nhật ký <span class="chu-grad">chi tiêu.</span></h1>
+				<p class="phu-de">
+					<span id="feed-so-luong"><%= soLuong %> khoản</span> · tổng
+					<b id="feed-tong"><%= tongTien_dep %></b>
+				</p>
+			</div>
+			<a class="nut nut-chinh" href="/camera">
+				<i data-lucide="camera"></i><span>Ghi khoản chi</span>
+			</a>
+		</header>
+
+		<form class="tab-bar" method="get" action="/feed">
+			<% Object.keys(boLocDs).forEach(function (ma) { %>
+			<button
+				type="submit"
+				name="loc"
+				value="<%= ma %>"
+				class="<%= boLoc === ma ? 'hoat-dong' : '' %>"
+			>
+				<%= boLocDs[ma].ten %>
+			</button>
+			<% }) %>
+			<% if (dmId) { %><input type="hidden" name="dm" value="<%= dmId %>" /><% } %>
+		</form>
+
+		<div class="hang-tag mt-16">
+			<a class="chip <%= !dmId ? 'chon' : '' %>" href="/feed?loc=<%= boLoc %>">
+				<i data-lucide="filter"></i> Tất cả danh mục
+			</a>
+			<% dsDanhMuc.forEach(function (d) { %>
+			<a
+				class="chip <%= dmId === d.id ? 'chon' : '' %>"
+				href="/feed?loc=<%= boLoc %>&dm=<%= d.id %>"
+				style="--mau: <%= d.mau_sac %>"
+			>
+				<span class="cham" style="background: <%= d.mau_sac %>"></span>
+				<%= d.icon %> <%= d.ten %>
+			</a>
+			<% }) %>
+		</div>
+
+		<div id="luoi-feed-boc" class="mt-24">
+			<% if (!nhom.length) { %>
+			<div class="trong">
+				<div class="hinh">🧾</div>
+				<h3>Chưa có khoản chi nào</h3>
+				<p>Không có khoản chi nào khớp bộ lọc này. Thử chọn “Tất cả” hoặc ghi khoản chi mới.</p>
+				<a class="nut nut-chinh mt-8" href="/camera">Mở Camera</a>
+			</div>
+			<% } %>
+
+			<% nhom.forEach(function (n) { %>
+			<div class="ngay-tieu-de" data-nhom-dau="<%= n.ngay %>">
+				<span class="ten"><%= n.thu %></span>
+				<span class="ngay"><%= n.ngay_dep %></span>
+				<span class="tong"><%= n.tong_dep %></span>
+			</div>
+			<div class="luoi-feed" data-nhom="<%= n.ngay %>">
+				<% n.items.forEach(function (e) { %>
+				<article
+					class="the-chi-tieu"
+					data-id="<%= e.id %>"
+					data-tien="<%= e.so_tien %>"
+					role="button"
+					tabindex="0"
+					aria-label="Khoản chi <%= e.so_tien_dep %> lúc <%= e.gio %>"
+				>
+					<% if (e.duong_dan_anh) { %>
+					<img class="anh" src="<%= e.duong_dan_anh %>" alt="" loading="lazy" />
+					<% } else { %>
+					<div class="khong-anh" aria-hidden="true">
+						<%= e.danh_muc.length ? e.danh_muc[0].icon : '🧾' %>
+					</div>
+					<% } %>
+					<span class="gio"><%= e.gio %></span>
+					<div class="duoi">
+						<div class="so-tien"><%= e.so_tien_dep %></div>
+						<div class="hang-tag">
+							<% e.danh_muc.forEach(function (d) { %>
+							<span class="chip-tinh" style="--mau: <%= d.mau_sac %>">
+								<%= d.icon %> <%= d.ten %>
+							</span>
+							<% }) %>
+						</div>
+						<% if (e.ghi_chu) { %>
+						<div class="ghi-chu"><%= e.ghi_chu %></div>
+						<% } %>
+					</div>
+				</article>
+				<% }) %>
+			</div>
+			<% }) %>
+		</div>
+	</main>
+
+	<%- include('partials/nav-duoi') %>
+</div>
+
+<script type="application/json" id="du-lieu-dm">
+	<%- JSON.stringify(dsDanhMuc).replace(/</g, '\\u003c') %>
+</script>
+
+<div class="man-che" id="hop-chi-tiet">
+	<div class="hop" role="dialog" aria-modal="true" aria-labelledby="tieu-de-ct">
+		<div class="hop-dau">
+			<h3 id="tieu-de-ct">Chi tiết khoản chi</h3>
+			<span class="chip-tinh" id="ct-gio"></span>
+			<button class="nut-icon" type="button" data-dong aria-label="Đóng">
+				<i data-lucide="x"></i>
+			</button>
+		</div>
+
+		<div class="hop-than">
+			<img id="ct-anh" class="anh-day an" alt="Ảnh khoản chi" />
+			<div id="ct-khong-anh" class="khong-anh-lon an">
+				<i data-lucide="receipt"></i>
+				<span>Khoản chi này không có ảnh</span>
+			</div>
+
+			<div class="o-nhom">
+				<label for="ct-tien">Số tiền</label>
+				<div class="o-tien-boc">
+					<input id="ct-tien" class="o-nhap o-tien" data-tien inputmode="numeric" />
+					<span class="don-vi">VNĐ</span>
+				</div>
+			</div>
+
+			<div class="o-nhom">
+				<label>Danh mục</label>
+				<div class="hang-tag" id="ct-chip"></div>
+			</div>
+
+			<div class="luoi luoi-2">
+				<div class="o-nhom">
+					<label for="ct-ngay">Ngày chi</label>
+					<input type="date" id="ct-ngay" class="o-nhap" />
+				</div>
+				<div class="o-nhom">
+					<label for="ct-ghi-chu">Ghi chú</label>
+					<input id="ct-ghi-chu" class="o-nhap" maxlength="200" />
+				</div>
+			</div>
+		</div>
+
+		<div class="hop-chan">
+			<button type="button" class="nut nut-nguy day-du" id="ct-xoa">
+				<i data-lucide="trash-2"></i><span>Xoá</span>
+			</button>
+			<button type="button" class="nut nut-chinh day-du" id="ct-luu">Lưu thay đổi</button>
+		</div>
+	</div>
+</div>
+
+<%- include('partials/cuoi', { js: ['/js/feed.js'] }) %>

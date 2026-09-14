@@ -1,0 +1,115 @@
+/* Motion layer: small springs for actions, slow light for the camera. */
+:root { --motion-spring: cubic-bezier(.22,1,.36,1); }
+@media (prefers-reduced-motion: no-preference) {
+  /* Entrance motion is coordinated by motion.js, without hiding content in CSS. */
+  .camera-giua, .budget-card, .recent-card, .hop-auth { animation: none; }
+  .nut, .nut-icon, .nut-phu-chup, .chip, .capture-mode button,
+  .dieu-huong a, .nav-duoi a, .mini-item, .o-dm, .the-chi-tieu {
+    transition: transform .32s var(--motion-spring), background-color .25s,
+      border-color .25s, box-shadow .3s, color .25s;
+  }
+  .nut:active, .nut-icon:active, .nut-phu-chup:active,
+  .chip:active, .capture-mode button:active { transform: scale(.95); }
+  .nut svg, .nut-icon svg, .lien-ket svg, .dieu-huong a svg, .nav-duoi a svg {
+    transition: transform .38s var(--motion-spring);
+  }
+  .lien-ket:hover svg { transform: translateX(4px); }
+  .dieu-huong a:hover svg, .nav-duoi a:hover svg { transform: translateY(-2px) rotate(-7deg); }
+  .nut-chinh:hover { box-shadow: 0 5px 26px #d2f87a20; }
+  .nut-chup { position: relative; transition: transform .4s var(--motion-spring), box-shadow .35s; }
+  .nut-chup::after {
+    content: ''; position: absolute; inset: -9px; border: 1px solid #d2f87a40;
+    border-radius: 50%; pointer-events: none; animation: shutter-breathe 3.6s ease-out infinite;
+  }
+  .nut-chup:hover { transform: scale(1.07); box-shadow: 0 0 30px #d2f87a2e; }
+  .nut-chup:active { transform: scale(.9); }
+  .khung-ngam {
+    --light-x: 50%; --light-y: 40%;
+    background-image: radial-gradient(ellipse at var(--light-x) var(--light-y), #668d3728, transparent 65%);
+    transition: border-color .4s, box-shadow .4s;
+  }
+  .khung-ngam:hover, .khung-ngam:focus-visible { box-shadow: inset 0 0 35px #bfe77809, 0 0 25px #bfe77809; }
+  .khung-ngam .luoi-ngam { overflow: hidden; }
+  .khung-ngam .luoi-ngam::after {
+    content: ''; position: absolute; left: 0; right: 0; top: 0; height: 28%;
+    border-bottom: 1px solid #d2f87a38;
+    background: linear-gradient(transparent, #d2f87a07);
+    animation: camera-scan 6.5s cubic-bezier(.45,0,.55,1) infinite;
+  }
+  .khung-ngam .vong-sang { animation: camera-float 4.5s ease-in-out infinite; }
+  .khung-ngam .goc { transition: translate .4s var(--motion-spring), border-color .3s; }
+  .khung-ngam:hover .goc.tl { translate: 4px 4px; }
+  .khung-ngam:hover .goc.tr { translate: -4px 4px; }
+  .khung-ngam:hover .goc.bl { translate: 4px -4px; }
+  .khung-ngam:hover .goc.br { translate: -4px -4px; }
+  .khung-ngam:hover .goc { border-color: var(--lime); }
+  .khung-ngam.co-anh .luoi-ngam::after { animation: none; opacity: 0; }
+  .budget-card {
+    --tilt-x: 0deg; --tilt-y: 0deg;
+    transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+    transition: transform .4s var(--motion-spring), box-shadow .4s;
+  }
+  .budget-card::after {
+    content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+    background: radial-gradient(circle at var(--light-x, 50%) var(--light-y, 0%), #fff6, transparent 60%);
+    opacity: 0; transition: opacity .5s;
+  }
+  .budget-card:hover::after { opacity: .6; }
+  .budget-ring .value { transition: stroke-dasharray 1s var(--motion-spring); }
+  .capture-mode { position: relative; isolation: isolate; }
+  .capture-mode button { position: relative; z-index: 1; }
+  .capture-mode.motion-tabs button[aria-pressed="true"] { background: transparent; }
+  .mode-indicator {
+    position: absolute; left: 0; top: 4px; bottom: 4px; width: 0;
+    border-radius: 7px; background: #303c23; pointer-events: none;
+    transition: transform .38s var(--motion-spring), width .38s var(--motion-spring);
+  }
+  .man-che { transition: opacity .28s ease, visibility .28s; }
+  .hop { transform: translateY(24px) scale(.96); transition: transform .46s var(--motion-spring); }
+  .man-che.mo .hop { transform: none; }
+  .hop-chan .nut:disabled { position: relative; overflow: hidden; }
+  .hop-chan .nut:disabled::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(100deg,transparent 25%,#ffffff24 50%,transparent 75%);
+    animation: saving-sheen 1.1s linear infinite;
+  }
+  .motion-ripple-host { position: relative; overflow: hidden; isolation: isolate; }
+  .motion-ripple {
+    position: absolute; pointer-events: none; border-radius: 50%;
+    background: currentColor; opacity: 0; animation: touch-ripple .55s ease-out;
+  }
+  .camera-giua:not(.motion-visible) .vong-sang,
+  .camera-giua:not(.motion-visible) .luoi-ngam::after,
+  .camera-giua:not(.motion-visible) .nut-chup::after,
+  .motion-paused *, .motion-paused *::before, .motion-paused *::after { animation-play-state: paused !important; }
+  @media (hover: hover) and (pointer: fine) {
+    .the-chi-tieu:not(.vo-giay):hover { transform: translateY(-6px) rotate(-.4deg); box-shadow: 0 14px 32px #0003; }
+    .o-dm:not(.vo-giay):hover { transform: translateY(-4px); box-shadow: 0 12px 26px #0002; }
+    .mini-item:hover { transform: translateX(4px); }
+    .nut-icon:hover svg { transform: rotate(-9deg) scale(1.08); }
+  }
+  @keyframes shutter-breathe {
+    0%, 100% { transform: scale(1); opacity: .12; }
+    45% { transform: scale(1.14); opacity: .55; }
+    80% { transform: scale(1.22); opacity: 0; }
+  }
+  @keyframes camera-float {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-7px) rotate(2deg); }
+  }
+  @keyframes camera-scan {
+    0% { transform: translateY(-110%); opacity: 0; }
+    15% { opacity: .6; }
+    65% { opacity: .6; }
+    85%, 100% { transform: translateY(410%); opacity: 0; }
+  }
+  @keyframes saving-sheen { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+  @keyframes touch-ripple {
+    from { transform: scale(.1); opacity: .18; }
+    to { transform: scale(1); opacity: 0; }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .motion-ripple, .mode-indicator { display: none; }
+  .budget-card { transform: none !important; }
+}

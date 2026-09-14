@@ -1,0 +1,18 @@
+<%- include('partials/dau') %>
+<main class="man-auth man-loi" id="noi-dung-chinh">
+	<div class="hop-auth">
+		<div class="logo">
+			<img class="logo-hinh" src="/img/favicon.svg?v=2" width="42" height="42" alt="" />
+			<span class="logo-chu">Locket<span>Chi Tiêu</span></span>
+		</div>
+		<h1><%= ma %></h1>
+		<p class="phu-de"><%= thongDiep %></p>
+		<div class="hang-doc mt-16">
+			<a class="nut nut-chinh day-du" href="/camera">
+				<i data-lucide="camera"></i><span>Về trang ghi chi tiêu</span>
+			</a>
+			<a class="nut day-du" href="/dashboard">Xem thống kê</a>
+		</div>
+	</div>
+</main>
+<%- include('partials/cuoi', { js: [] }) %>

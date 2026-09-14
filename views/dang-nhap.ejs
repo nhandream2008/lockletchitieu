@@ -1,0 +1,54 @@
+<%- include('partials/dau') %>
+<main class="man-auth" id="noi-dung-chinh">
+	<%- include('partials/auth-gioi-thieu') %>
+	<div class="hop-auth">
+		<div class="logo">
+			<img class="logo-hinh" src="/img/favicon.svg?v=2" width="42" height="42" alt="" />
+			<span class="logo-chu">locket<span>CHI TIÊU CÁ NHÂN</span></span>
+		</div>
+
+		<span class="eyebrow">GÓC NHỎ CỦA BẠN</span>
+		<h1>Chào bạn trở lại.</h1>
+		<p class="phu-de">Đăng nhập để tiếp tục chăm sóc chiếc ví của mình.</p>
+
+		<% if (loi) { %>
+		<div class="loi-hop"><i data-lucide="alert-triangle"></i> <%= loi %></div>
+		<% } %>
+
+		<form class="form-doc" method="post" action="/dang-nhap">
+			<input type="hidden" name="tiep" value="<%= tiep %>" />
+			<div class="o-nhom">
+				<label for="ten">Tên đăng nhập</label>
+				<input
+					id="ten"
+					name="ten"
+					class="o-nhap"
+					value="<%= ten %>"
+					autocomplete="username"
+					required
+					autofocus
+				/>
+			</div>
+			<div class="o-nhom">
+				<label for="mat_khau">Mật khẩu hoặc PIN</label>
+				<input
+					id="mat_khau"
+					name="mat_khau"
+					type="password"
+					class="o-nhap"
+					autocomplete="current-password"
+					required
+				/>
+			</div>
+			<button type="submit" class="nut nut-chinh day-du">
+				<i data-lucide="lock"></i><span>Đăng nhập</span>
+			</button>
+		</form>
+
+		<div class="chan-auth">
+			<span class="mo nho">Người dùng mới?</span>
+			<a href="/thiet-lap">Tạo tài khoản</a>
+		</div>
+	</div>
+</main>
+<%- include('partials/cuoi', { js: [] }) %>

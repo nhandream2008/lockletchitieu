@@ -1,0 +1,182 @@
+<%- include('partials/dau') %>
+<div class="app">
+	<%- include('partials/sidebar') %>
+
+	<main class="noi-dung" id="noi-dung-chinh">
+		<%- include('partials/thanh-tren') %>
+		<header class="dau-trang">
+			<div>
+				<h1>Danh mục <span class="chu-grad">chi tiêu</span></h1>
+				<p class="phu-de">
+					<%= dsDanhMuc.length %> danh mục · một khoản chi có thể gắn nhiều danh mục
+				</p>
+			</div>
+			<button type="button" class="nut nut-chinh" data-them-dm>
+				<i data-lucide="plus"></i><span>Thêm danh mục</span>
+			</button>
+		</header>
+
+		<div class="ds-danh-muc">
+			<% dsDanhMuc.forEach(function (d) { %>
+			<div
+				class="o-dm"
+				data-id="<%= d.id %>"
+				data-ten="<%= d.ten %>"
+				data-mau="<%= d.mau_sac %>"
+				data-icon="<%= d.icon %>"
+				data-so="<%= d.so_khoan_chi %>"
+			>
+				<span
+					class="bieu-tuong"
+					style="background: <%= d.mau_sac %>22; border-color: <%= d.mau_sac %>55"
+					aria-hidden="true"
+				>
+					<%= d.icon %>
+				</span>
+				<div>
+					<div class="ten"><%= d.ten %></div>
+					<div class="phu">
+						<%= d.so_khoan_chi %> khoản chi<% if (d.la_mac_dinh) { %> · mặc định<% } %>
+					</div>
+				</div>
+				<div class="tac-vu">
+					<a
+						class="nut-icon"
+						href="/feed?loc=tat-ca&dm=<%= d.id %>"
+						title="Xem các khoản chi"
+						aria-label="Xem các khoản chi của <%= d.ten %>"
+					>
+						<i data-lucide="images"></i>
+					</a>
+					<button
+						type="button"
+						class="nut-icon"
+						data-sua
+						title="Sửa danh mục"
+						aria-label="Sửa <%= d.ten %>"
+					>
+						<i data-lucide="pencil"></i>
+					</button>
+					<button
+						type="button"
+						class="nut-icon"
+						data-xoa
+						title="Xoá danh mục"
+						aria-label="Xoá <%= d.ten %>"
+					>
+						<i data-lucide="trash-2"></i>
+					</button>
+				</div>
+			</div>
+			<% }) %>
+		</div>
+
+		<section class="the mt-24">
+			<div class="the-dau">
+				<h3><i data-lucide="bar-chart"></i> <%= khoang.nhan %> theo danh mục</h3>
+				<a class="nut nut-nho" href="/dashboard?loai=thang">Xem thống kê</a>
+			</div>
+			<% if (!thangNay.length) { %>
+			<p class="nho mo">Tháng này chưa có khoản chi nào.</p>
+			<% } else { %>
+			<table class="bang">
+				<thead>
+					<tr>
+						<th>Danh mục</th>
+						<th class="phai">Tổng tiền</th>
+						<th class="phai">%</th>
+						<th class="phai">GD</th>
+					</tr>
+				</thead>
+				<tbody>
+					<% thangNay.forEach(function (d) { %>
+					<tr>
+						<td>
+							<span class="o-danh-muc">
+								<span
+									class="bieu-tuong"
+									style="background: <%= d.mau_sac %>22; border-color: <%= d.mau_sac %>55"
+								>
+									<%= d.icon %>
+								</span>
+								<span>
+									<%= d.ten %>
+									<span class="thanh-mini">
+										<i style="width: <%= Math.max(2, Math.min(100, d.phan_tram)) %>%; background: <%= d.mau_sac %>"></i>
+									</span>
+								</span>
+							</span>
+						</td>
+						<td class="phai"><%= d.tong_dep %></td>
+						<td class="phai"><%= d.phan_tram %>%</td>
+						<td class="phai"><%= d.so_giao_dich %></td>
+					</tr>
+					<% }) %>
+				</tbody>
+			</table>
+			<% } %>
+		</section>
+	</main>
+
+	<%- include('partials/nav-duoi') %>
+</div>
+
+<div class="man-che" id="hop-danh-muc">
+	<div class="hop" role="dialog" aria-modal="true" aria-labelledby="dm-tieu-de">
+		<div class="hop-dau">
+			<h3 id="dm-tieu-de">Thêm danh mục</h3>
+			<button class="nut-icon" type="button" data-dong aria-label="Đóng">
+				<i data-lucide="x"></i>
+			</button>
+		</div>
+
+		<div class="hop-than">
+			<div id="dm-xem-truoc"></div>
+
+			<div class="o-nhom">
+				<label for="dm-ten">Tên danh mục</label>
+				<input id="dm-ten" class="o-nhap" maxlength="40" placeholder="Ví dụ: Cà phê" />
+			</div>
+
+			<div class="o-nhom">
+				<label>Màu nhạn diện</label>
+				<div class="bang-mau" id="dm-mau">
+					<% mauGoiY.forEach(function (m) { %>
+					<button
+						type="button"
+						class="o-mau"
+						data-mau="<%= m %>"
+						style="background: <%= m %>"
+						aria-label="Màu <%= m %>"
+						aria-pressed="false"
+					></button>
+					<% }) %>
+				</div>
+			</div>
+
+			<div class="o-nhom">
+				<label>Biểu tượng</label>
+				<div class="bang-icon" id="dm-icon">
+					<% iconGoiY.forEach(function (ic) { %>
+					<button
+						type="button"
+						class="o-icon"
+						data-icon="<%= ic %>"
+						aria-label="Biểu tượng <%= ic %>"
+						aria-pressed="false"
+					>
+						<%= ic %>
+					</button>
+					<% }) %>
+				</div>
+			</div>
+		</div>
+
+		<div class="hop-chan">
+			<button type="button" class="nut day-du" data-dong>Huỷ</button>
+			<button type="button" class="nut nut-chinh day-du" id="dm-luu">Tạo danh mục</button>
+		</div>
+	</div>
+</div>
+
+<%- include('partials/cuoi', { js: ['/js/danh-muc.js'] }) %>

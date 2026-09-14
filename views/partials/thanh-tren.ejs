@@ -1,0 +1,5 @@
+<div class="thanh-tren">
+	<a class="mobile-logo" href="/camera"><img src="/img/favicon.svg?v=2" width="30" height="30" alt="" /><b>locket</b></a>
+	<div class="duong-dan"><span>Ví cá nhân</span><i data-lucide="chevron-right"></i><b><%= ({camera: 'Ghi chi tiêu', feed: 'Nhật ký chi tiêu', dashboard: 'Thống kê', 'danh-muc': 'Danh mục', 'cai-dat': 'Cài đặt'})[trang] || tieuDe %></b></div>
+	<time class="ngay-hien-tai" datetime="<%= h.homNay() %>"><i data-lucide="calendar"></i><%= h.dinhDangNgay(h.homNay()) %></time>
+</div>

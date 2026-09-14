@@ -1,0 +1,32 @@
+<aside class="sidebar">
+	<a class="logo" href="/camera" aria-label="Locket Chi Tiêu — Trang chủ">
+		<img class="logo-hinh" src="/img/favicon.svg?v=2" width="42" height="42" alt="" />
+		<span class="logo-chu">locket<span>CHI TIÊU CÁ NHÂN</span></span>
+	</a>
+	<div class="nav-nhan">KHÔNG GIAN CỦA BẠN</div>
+	<nav class="dieu-huong" aria-label="Điều hướng chính">
+		<% const mucNav = [ ['camera', 'camera', 'Ghi chi tiêu'], ['feed', 'images', 'Nhật ký chi tiêu'], ['dashboard', 'bar-chart', 'Thống kê'], ['danh-muc', 'tags', 'Danh mục'], ['cai-dat', 'settings', 'Cài đặt'] ]; %>
+		<% mucNav.forEach(function(m) { %>
+		<a href="/<%= m[0] %>" class="<%= trang === m[0] ? 'hoat-dong' : '' %>" <%- trang === m[0] ? 'aria-current="page"' : '' %>>
+			<i data-lucide="<%= m[1] %>"></i><span><%= m[2] %></span>
+			<% if (trang === m[0]) { %><span class="nav-cham" aria-hidden="true"></span><% } %>
+		</a>
+		<% }) %>
+	</nav>
+	<div class="the-hom-nay">
+		<div class="the-dau"><span class="nhan">NGÂN SÁCH HÔM NAY</span><i data-lucide="wallet"></i></div>
+		<div class="so"><%= homNayTomTat.tong_dep %></div>
+		<div class="phu">trên <%= homNayTomTat.hanMuc_dep %></div>
+		<div class="tien-do <%= homNayTomTat.trangThai %>"><i style="width: <%= Math.max(0, Math.min(100, homNayTomTat.phanTram)) %>%"></i></div>
+		<a href="/cai-dat" class="sidebar-lien-ket">Điều chỉnh hạn mức <i data-lucide="chevron-right"></i></a>
+	</div>
+	<div class="huy-hieu">
+		<span class="huy-hieu-icon" aria-hidden="true"><%= thanhTich.bac.icon %></span>
+		<div><b><%= thanhTich.bac.ten %></b><span class="phu"><%= h.dinhDangSo(thanhTich.diem) %> điểm tiết kiệm</span></div>
+	</div>
+	<div class="the-user">
+		<span class="anh" aria-hidden="true"><%= user.ten.trim().slice(0, 1).toUpperCase() %></span>
+		<div class="ten"><%= user.ten %><small>Ví cá nhân</small></div>
+		<form method="post" action="/dang-xuat"><button class="nut-thoat" type="submit" title="Đăng xuất" aria-label="Đăng xuất"><i data-lucide="log-out"></i></button></form>
+	</div>
+</aside>
